@@ -1,0 +1,29 @@
+# name your datacenter
+global:
+  name: consul
+  datacenter: kubernetes
+  image: "hashicorp/consul:1.10.0-beta3"
+  metrics:
+    enabled: true
+
+prometheus:
+  enabled: true
+
+server:
+  replicas: 1
+
+client:
+  enabled: true
+
+connectInject:
+  enabled: true
+  transparentProxy:
+    defaultEnabled: tru
+
+ui:
+  enabled: true
+  service:
+    type: LoadBalancer
+
+controller:
+  enabled: true
