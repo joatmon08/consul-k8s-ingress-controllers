@@ -1,3 +1,10 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: web
+spec:
+  protocol: http
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -36,6 +43,7 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
+        consul.hashicorp.com/transparent-proxy-overwrite-probes: "true"
         consul.hashicorp.com/service-meta-version: baseline
       labels:
         app: web
@@ -53,7 +61,8 @@ spec:
             - name: MESSAGE
               value: "Web (baseline)"
           livenessProbe:
-            tcpSocket:
+            httpGet:
+              path: /health
               port: 9090
-            initialDelaySeconds: 10
-            periodSeconds: 10
+            initialDelaySeconds: 3
+            periodSeconds: 3

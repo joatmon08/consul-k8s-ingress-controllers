@@ -3,8 +3,10 @@ global:
   name: consul
   datacenter: kubernetes
   image: "hashicorp/consul:1.10.0-beta3"
+  imageK8S: "hashicorp/consul-k8s:0.26.0-beta3"
   metrics:
     enabled: true
+    enableAgentMetrics: true
 
 prometheus:
   enabled: true
@@ -18,7 +20,8 @@ client:
 connectInject:
   enabled: true
   transparentProxy:
-    defaultEnabled: tru
+    defaultEnabled: true
+  logLevel: debug
 
 ui:
   enabled: true

@@ -1,67 +1,40 @@
-apiVersion: consul.hashicorp.com/v1alpha1
-kind: ServiceDefaults
-metadata:
-  name: ui
-spec:
-  protocol: http
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: ui
-  labels:
-    app: ui
-  annotations:
-    ingress.kubernetes.io/service-upstream: "true"
-spec:
-  selector:
-    app: ui
-  ports:
-    - name: http
-      protocol: TCP
-      port: 80
-      targetPort: 9090
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: ui
-automountServiceAccountToken: true
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ui
+  name: web-canary
   labels:
-    app: ui
+    app: web
+    release: canary
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ui
+      app: web
+      release: canary
   template:
     metadata:
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
+        consul.hashicorp.com/connect-service: "web"
         consul.hashicorp.com/transparent-proxy-overwrite-probes: "true"
+        consul.hashicorp.com/service-meta-version: canary
       labels:
-        app: ui
+        app: web
+        release: canary
     spec:
-      serviceAccountName: ui
+      serviceAccountName: web
       containers:
-        - name: ui
+        - name: web
           image: "nicholasjackson/fake-service:v0.19.1"
           ports:
             - containerPort: 9090
           env:
             - name: NAME
-              value: "UI"
+              value: "Web (canary)"
             - name: MESSAGE
-              value: "UI"
-            - name: UPSTREAM_URIS
-              value: "http://web"
+              value: "Web (canary)"
           livenessProbe:
             httpGet:
               path: /health

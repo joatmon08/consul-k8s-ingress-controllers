@@ -1,0 +1,35 @@
+ingressController:
+  livenessProbe:
+    httpGet: null
+    tcpSocket:
+      port: 10254
+  readinessProbe:
+    httpGet: null
+    tcpSocket:
+      port: 10254
+
+podAnnotations:
+  consul.hashicorp.com/connect-inject: "true"
+  consul.hashicorp.com/transparent-proxy: "true"
+  consul.hashicorp.com/transparent-proxy-overwrite-probes: "true"
+  consul.hashicorp.com/transparent-proxy-exclude-inbound-ports: 8000,8443
+
+livenessProbe:
+  httpGet: null
+  tcpSocket:
+    port: status
+readinessProbe:
+  httpGet: null
+  tcpSocket:
+    port: status
+
+# readinessProbe:
+#   httpGet:
+#     path: "/status"
+#     port: 8100
+#     scheme: HTTP
+# livenessProbe:
+#   httpGet:
+#     path: "/status"
+#     port: 8100
+#     scheme: HTTP
