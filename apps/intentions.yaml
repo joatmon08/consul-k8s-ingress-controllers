@@ -1,0 +1,40 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: kong
+spec:
+  destination:
+    name: ui
+  sources:
+    - name: example-kong-proxy
+      permissions:
+        - action: allow
+          http:
+            pathPrefix: /ui
+            methods: ['GET']
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: ui
+spec:
+  destination:
+    name: web
+  sources:
+    - name: ui
+      permissions:
+        - action: allow
+          http:
+            pathPrefix: /
+            methods: ['GET', 'PUT', 'POST', 'DELETE', 'HEAD']
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: default
+spec:
+  destination:
+    name: "*"
+  sources:
+    - name: "*"
+      action: deny
