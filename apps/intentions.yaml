@@ -10,5 +10,9 @@ spec:
       permissions:
         - action: allow
           http:
-            pathPrefix: /
+            pathExact: /
+            methods: ['GET']
+        - action: allow
+          http:
+            pathExact: /favicon.io
             methods: ['GET']

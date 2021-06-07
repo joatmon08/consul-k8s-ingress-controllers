@@ -2,6 +2,8 @@
 global:
   name: consul
   datacenter: kubernetes
+  acls:
+    manageSystemACLs: true
   metrics:
     enabled: true
     enableAgentMetrics: true
