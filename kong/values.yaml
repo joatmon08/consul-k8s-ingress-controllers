@@ -1,4 +1,6 @@
 ingressController:
+  serviceAccount:
+    name: example-kong-proxy
   livenessProbe:
     httpGet: null
     tcpSocket:
@@ -17,11 +19,11 @@ podAnnotations:
 livenessProbe:
   httpGet: null
   tcpSocket:
-    port: status
+    port: 8100
 readinessProbe:
   httpGet: null
   tcpSocket:
-    port: status
+    port: 8100
 
 # readinessProbe:
 #   httpGet:

@@ -4,6 +4,7 @@ metadata:
   name: ui
   annotations:
     kubernetes.io/ingress.class: kong
+    konghq.com/plugins: rate-limit
 spec:
   rules:
   - http:

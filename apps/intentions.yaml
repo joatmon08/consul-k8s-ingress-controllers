@@ -10,7 +10,11 @@ spec:
       permissions:
         - action: allow
           http:
-            pathPrefix: /ui
+            pathExact: /
+            methods: ['GET']
+        - action: allow
+          http:
+            pathPrefix: /ui/
             methods: ['GET']
 ---
 apiVersion: consul.hashicorp.com/v1alpha1
@@ -31,14 +35,3 @@ spec:
           http:
             pathExact: /favicon.ico
             methods: ['GET']
----
-apiVersion: consul.hashicorp.com/v1alpha1
-kind: ServiceIntentions
-metadata:
-  name: default
-spec:
-  destination:
-    name: "*"
-  sources:
-    - name: "*"
-      action: deny
