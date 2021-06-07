@@ -25,8 +25,12 @@ spec:
       permissions:
         - action: allow
           http:
-            pathPrefix: /
-            methods: ['GET', 'PUT', 'POST', 'DELETE', 'HEAD']
+            pathExact: /
+            methods: ['GET']
+        - action: allow
+          http:
+            pathExact: /favicon.ico
+            methods: ['GET']
 ---
 apiVersion: consul.hashicorp.com/v1alpha1
 kind: ServiceIntentions
