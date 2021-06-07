@@ -43,7 +43,6 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/transparent-proxy-overwrite-probes: "true"
         consul.hashicorp.com/service-meta-version: baseline
       labels:
         app: web

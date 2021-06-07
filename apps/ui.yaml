@@ -45,7 +45,7 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9102"
         consul.hashicorp.com/connect-inject: "true"
-        consul.hashicorp.com/transparent-proxy-overwrite-probes: "true"
+        consul.hashicorp.com/connect-service-upstreams: web:9091
       labels:
         app: ui
     spec:
@@ -61,7 +61,7 @@ spec:
             - name: MESSAGE
               value: "UI"
             - name: UPSTREAM_URIS
-              value: "http://web"
+              value: "http://localhost:9091"
           livenessProbe:
             httpGet:
               path: /health

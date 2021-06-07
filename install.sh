@@ -2,6 +2,8 @@
 
 helm install consul hashicorp/consul --version v0.32.0-beta3 --values consul.yaml
 
+
+
 kubectl apply -f consul/
 
 ## Creating applications

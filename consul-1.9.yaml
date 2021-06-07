@@ -1,0 +1,27 @@
+# name your datacenter
+global:
+  name: consul
+  datacenter: kubernetes
+  metrics:
+    enabled: true
+    enableAgentMetrics: true
+
+prometheus:
+  enabled: true
+
+server:
+  replicas: 1
+
+client:
+  enabled: true
+
+connectInject:
+  enabled: true
+
+ui:
+  enabled: true
+  service:
+    type: LoadBalancer
+
+controller:
+  enabled: true
