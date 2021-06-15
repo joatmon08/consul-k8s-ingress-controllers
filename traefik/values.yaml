@@ -1,0 +1,13 @@
+deployment:
+  podAnnotations:
+    consul.hashicorp.com/connect-inject: "true"
+    consul.hashicorp.com/connect-service: "traefik"
+    consul.hashicorp.com/transparent-proxy: "true"
+    consul.hashicorp.com/transparent-proxy-overwrite-probes: "false"
+    consul.hashicorp.com/transparent-proxy-exclude-inbound-ports: "9000,8000,8443"
+    consul.hashicorp.com/transparent-proxy-exclude-outbound-ports: "443"
+    consul.hashicorp.com/transparent-proxy-exclude-outbound-cidrs: "10.87.240.1/32"
+
+logs:
+  general:
+    level: DEBUG

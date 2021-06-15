@@ -1,0 +1,13 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ui
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: PathPrefix(`/`)
+    kind: Rule
+    services:
+    - name: ui
+      port: 80

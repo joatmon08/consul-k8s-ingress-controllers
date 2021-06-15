@@ -78,6 +78,10 @@ We use Kong's Helm chart to install Kong Ingress.
    ![](img/kong-fake-service-rate-limit.png)
 
 
+## Traefik
+
+
+
 ## Cleanup
 
 Delete Kong resources.
