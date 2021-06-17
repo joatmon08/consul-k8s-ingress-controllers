@@ -71,16 +71,65 @@ We use Kong's Helm chart to install Kong Ingress.
 1. Add `/ui` to the end of the URL in your browser.
    You should be able to access the fake-service UI. It will use Consul to load balance
    between a baseline and canary version of `web`.
+
    ![](img/kong-fake-service.png)
 
 1. If you refresh the browser, you'll eventually get an error that Kong is rate-limiting
    requests to the API.
-   ![](img/kong-fake-service-rate-limit.png)
 
+   ![](img/kong-fake-service-rate-limit.png)
 
 ## Traefik
 
+We use Traefik's Helm chart to install Traefik Ingress.
 
+1. Add and install the Kong Helm chart.
+   ```shell
+   helm repo add traefik https://helm.traefik.io/traefik
+   helm repo update
+   ```
+
+1. Get the Kubernetes service IPs. You'll need it to exclude from transparent proxy.
+   ```shell
+   export KUBERNETES_SVC_IP=$(kubectl get svc kubernetes -o=jsonpath='{.spec.clusterIP}')
+   ```
+
+1. Create a `values.yaml` file that excludes ports, certain CIDR blocks, and disables
+   probes.
+   ```shell
+   cat <<EOF > traefik/values.yaml
+   deployment:
+   podAnnotations:
+      consul.hashicorp.com/connect-inject: "true"
+      consul.hashicorp.com/connect-service: "traefik"
+      consul.hashicorp.com/transparent-proxy: "true"
+      consul.hashicorp.com/transparent-proxy-overwrite-probes: "false"
+      consul.hashicorp.com/transparent-proxy-exclude-inbound-ports: "9000,8000,8443"
+      consul.hashicorp.com/transparent-proxy-exclude-outbound-ports: "443"
+      consul.hashicorp.com/transparent-proxy-exclude-outbound-cidrs: "${KUBERNETES_SVC_IP}/32"
+
+   logs:
+   general:
+      level: DEBUG
+   EOF
+   ```
+
+1. Deploy the Traefik proxy and ingress controller.
+   ```shell
+   helm install -n default traefik traefik/traefik -f traefik/values.yaml
+   ```
+
+1. Update the UI service defaults to directly dial the pod IP.
+   ```shell
+   export CONSUL_HTTP_ADDR=$(kubectl get svc consul-ui -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+   export CONSUL_HTTP_TOKEN=$(kubectl get secrets consul-bootstrap-acl-token -o=jsonpath='{.data.token}' | base64 -d)
+   consul config write traefik/consul/service-defaults.hcl
+   ```
+
+1. Apply the Traefik IngressRoute
+   ```shell
+   kubectl apply -f traefik/kubernetes/
+   ```
 
 ## Cleanup
 
@@ -90,10 +139,23 @@ Delete Kong resources.
 kubectl delete -f kong/kubernetes/
 ```
 
+
+Delete Traefik resources.
+
+```shell
+kubectl delete -f traefik/kubernetes/
+```
+
 Delete Kong proxy and ingress controller.
 
 ```shell
 helm del example
+```
+
+Delete Traefik proxy and ingress controller.
+
+```shell
+helm del traefik
 ```
 
 Delete applications.
