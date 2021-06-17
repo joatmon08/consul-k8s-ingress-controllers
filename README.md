@@ -81,6 +81,8 @@ We use Kong's Helm chart to install Kong Ingress.
 
 ## Traefik
 
+> Note: Traefik requires `1.10.0-beta4` and a dev version of `consul-k8s`.
+
 We use Traefik's Helm chart to install Traefik Ingress.
 
 1. Add and install the Kong Helm chart.
