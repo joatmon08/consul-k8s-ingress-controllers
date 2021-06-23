@@ -10,7 +10,7 @@
 
 1. Install Consul 1.10+ to the Kubernetes cluster.
    ```shell
-   helm install consul hashicorp/consul --version v0.32.0-beta3 --values consul.yaml
+   helm install consul hashicorp/consul --values consul.yaml
    ```
 
    > NOTE: You must have ACLs enabled in order for app-aware intentions to work. The
@@ -45,7 +45,6 @@ We use Kong's Helm chart to install Kong Ingress.
    updates to the Kong deployment.
    - Define the service account name for the ingress controller to `example-kong-proxy`.
      The service account name needs to match the service name for Consul ACLs.
-   - Update all `livenessProbe` and `readinessProbe` to TCP (for now).
    - Add `podAnnotations` for Consul to:
      - Inject the sidecar proxy
      - Enable transparent proxy

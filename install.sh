@@ -1,6 +1,6 @@
 #!/bin/bash
 
-helm install consul ./consul-helm --values consul.yaml
+helm install consul hashicorp/consul --values consul.yaml
 
 kubectl apply -f consul/
 
