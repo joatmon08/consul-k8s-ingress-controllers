@@ -67,11 +67,10 @@ We use Kong's Helm chart to install Kong Ingress.
    kubectl get svc example-kong-proxy  -o jsonpath="{.status.loadBalancer.ingress[*].ip}"
    ```
 
-1. Add `/ui` to the end of the URL in your browser.
-   You should be able to access the fake-service UI. It will use Consul to load balance
-   between a baseline and canary version of `web`.
+1. Add `/ui` to the end of Kong's service's external IP in your browser.
+   You should be able to access the fake-service UI.
 
-   ![](img/kong-fake-service.png)
+   ![](img/fake-service.png)
 
 1. If you refresh the browser, you'll eventually get an error that Kong is rate-limiting
    requests to the API.
@@ -79,8 +78,6 @@ We use Kong's Helm chart to install Kong Ingress.
    ![](img/kong-fake-service-rate-limit.png)
 
 ## Traefik
-
-> Note: Traefik requires `1.10.0-beta4` and a dev version of `consul-k8s`.
 
 We use Traefik's Helm chart to install Traefik Ingress.
 
@@ -100,18 +97,18 @@ We use Traefik's Helm chart to install Traefik Ingress.
    ```shell
    cat <<EOF > traefik/values.yaml
    deployment:
-   podAnnotations:
-      consul.hashicorp.com/connect-inject: "true"
-      consul.hashicorp.com/connect-service: "traefik"
-      consul.hashicorp.com/transparent-proxy: "true"
-      consul.hashicorp.com/transparent-proxy-overwrite-probes: "false"
-      consul.hashicorp.com/transparent-proxy-exclude-inbound-ports: "9000,8000,8443"
-      consul.hashicorp.com/transparent-proxy-exclude-outbound-ports: "443"
-      consul.hashicorp.com/transparent-proxy-exclude-outbound-cidrs: "${KUBERNETES_SVC_IP}/32"
+      podAnnotations:
+         consul.hashicorp.com/connect-inject: "true"
+         consul.hashicorp.com/connect-service: "traefik"
+         consul.hashicorp.com/transparent-proxy: "true"
+         consul.hashicorp.com/transparent-proxy-overwrite-probes: "true"
+         consul.hashicorp.com/transparent-proxy-exclude-inbound-ports: "9000,8000,8443"
+         consul.hashicorp.com/transparent-proxy-exclude-outbound-ports: "443"
+         consul.hashicorp.com/transparent-proxy-exclude-outbound-cidrs: "${KUBERNETES_SVC_IP}/32"
 
    logs:
-   general:
-      level: DEBUG
+      general:
+         level: DEBUG
    EOF
    ```
 
@@ -120,17 +117,16 @@ We use Traefik's Helm chart to install Traefik Ingress.
    helm install -n default traefik traefik/traefik -f traefik/values.yaml
    ```
 
-1. Update the UI service defaults to directly dial the pod IP.
-   ```shell
-   export CONSUL_HTTP_ADDR=$(kubectl get svc consul-ui -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
-   export CONSUL_HTTP_TOKEN=$(kubectl get secrets consul-bootstrap-acl-token -o=jsonpath='{.data.token}' | base64 -d)
-   consul config write traefik/consul/service-defaults.hcl
-   ```
-
-1. Apply the Traefik IngressRoute
+1. Apply the Traefik IngressRoute and reconfigure the ServiceDefaults for the UI
+   use direct dialing for pod IP.
    ```shell
    kubectl apply -f traefik/kubernetes/
    ```
+
+1. Add `/ui` to the end of the Traefik service's external IP in your browser.
+   You should be able to access the fake-service UI.
+
+   ![](img/fake-service.png)
 
 ## Cleanup
 
