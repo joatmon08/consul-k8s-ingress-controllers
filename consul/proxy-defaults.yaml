@@ -4,4 +4,4 @@ metadata:
   name: global
 spec:
   config:
-    protocol: tcp
+    protocol: http

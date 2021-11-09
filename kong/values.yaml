@@ -4,6 +4,4 @@ ingressController:
 
 podAnnotations:
   consul.hashicorp.com/connect-inject: "true"
-  consul.hashicorp.com/transparent-proxy: "true"
-  consul.hashicorp.com/transparent-proxy-overwrite-probes: "true"
   consul.hashicorp.com/transparent-proxy-exclude-inbound-ports: 8000,8443
